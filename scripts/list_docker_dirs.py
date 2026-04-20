@@ -19,7 +19,8 @@ def main():
         print(json.dumps({"error": str(e)}))
         sys.exit(1)
 
-    print(json.dumps({"dirs": sorted(entries)}))
+    # Return dirs as a single comma-separated string (external data source expects string values)
+    print(json.dumps({"dirs": ",".join(sorted(entries))}))
 
 if __name__ == '__main__':
     main()

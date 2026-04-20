@@ -40,7 +40,7 @@ Parameters:
   ProjectName:
     Type: String
     Description: Name of the GitHub repository (change this when copying to another repo)
-    Default: aws-shared-infrastructure
+    Default: aws-shared-images
     MinLength: 1
     MaxLength: 100
     AllowedPattern: ^[a-zA-Z0-9._-]+$
