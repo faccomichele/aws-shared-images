@@ -9,7 +9,7 @@ RUN apk add --no-cache \
     jq \
     python3
 
-COPY docker/general/entrypoint.sh /usr/local/bin/entrypoint
+COPY entrypoint.sh /usr/local/bin/entrypoint
 RUN chmod +x /usr/local/bin/entrypoint
 
 WORKDIR /workspace
