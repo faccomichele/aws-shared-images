@@ -1,7 +1,3 @@
-locals {
-  docker_dirs = toset(compact(split(",", data.external.docker_dirs.result.dirs)))
-}
-
 resource "aws_ecr_repository" "this" {
   for_each = local.docker_dirs
 
