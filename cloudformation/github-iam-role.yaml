@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'GitHub Actions IAM Role - Template for deploying repository-specific GitHub Actions roles that assume the shared OIDC provider'
 
-# Stack Name: gha-role-for-aws-shared-infrastructure-${Environment}
+# Stack Name: gha-role-for-aws-shared-images-${Environment}
 
 # DEPLOYMENT INSTRUCTIONS:
 # 1. Copy this template to your target repository
@@ -96,38 +96,31 @@ Resources:
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
-              # ECS cluster management used by this repository Terraform templates
-              - Sid: ECSClusterManagement
+              - Sid: ECRManagement
                 Effect: Allow
                 Action:
-                  - ecs:ListClusters
-                  - ecs:CreateCluster
-                  - ecs:DescribeClusters
-                  - ecs:DeleteCluster
-                  - ecs:UpdateClusterSettings
-                  - ecs:PutClusterCapacityProviders
-                  - ecs:DescribeCapacityProviders
-                  - ecs:TagResource
-                  - ecs:UntagResource
-                  - ecs:ListTagsForResource
+                  - ecr:CreateRepository
+                  - ecr:DescribeRepositories
+                  - ecr:DeleteRepository
+                  - ecr:ListTagsForResource
+                  - ecr:TagResource
+                  - ecr:UntagResource
+                  - ecr:PutImageTagMutability
+                  - ecr:SetRepositoryPolicy
                 Resource:
-                  - !Sub 'arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${ProjectName}*'
+                  - !Sub 'arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${ProjectName}*'
 
-              # CloudWatch Logs management for ECS log groups used by this repository Terraform templates
-              - Sid: CloudWatchLogsManagement
+              - Sid: ECRImagePush
                 Effect: Allow
                 Action:
-                  - logs:DescribeLogGroups
-                  - logs:ListTagsForResource
-                  - logs:CreateLogGroup
-                  - logs:DeleteLogGroup
-                  - logs:PutRetentionPolicy
-                  - logs:DeleteRetentionPolicy
-                  - logs:TagResource
-                  - logs:UntagResource
-                Resource:
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/ecs/${ProjectName}*'
-                  - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group::log-stream:*'
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:CompleteLayerUpload
+                  - ecr:InitiateLayerUpload
+                  - ecr:UploadLayerPart
+                  - ecr:PutImage
+                  - ecr:BatchGetImage
+                Resource: '*'
       Tags:
         - Key: Project
           Value: !Ref ProjectName
